@@ -29,8 +29,8 @@ async function pollClock() {
     // GET the clock status using basic auth
     const response = await axios.get(`https://${CLOCK_ADDRESS}/api/status`, {
       auth: {
-        username: 'monitoring',
-        password: 'monitoring'
+        username: CLOCK_USERNAME,
+        password: CLOCK_PASSWORD
       },
       headers: {
         'Content-Type': 'text/plain'
