@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('axios');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 
@@ -16,7 +17,8 @@ if (!CLOCK_ADDRESS || !INFLUX_URL || !INFLUX_TOKEN || !INFLUX_ORG || !INFLUX_BUC
   console.error("Missing one or more required environment variables.");
   process.exit(1);
 }
-let hostHeader = { Host: "ntp2.domain.forest" };
+
+let hostHeader = { Host: CLOCK_ADDRESS  };
 // Create InfluxDB client and write API
 const influxDB = new InfluxDB({ url: INFLUX_URL, token: INFLUX_TOKEN });
 const writeApi = influxDB.getWriteApi(INFLUX_ORG, INFLUX_BUCKET, 'ns');
@@ -34,9 +36,7 @@ async function pollClock() {
       },
       headers: {
         'Content-Type': 'text/plain'
-        
-    },
-
+      },
       timeout: 5000 // 5 second timeout
     });
     const data = response.data;
@@ -68,7 +68,6 @@ async function pollClock() {
     console.log("Metrics written to InfluxDB at", new Date().toISOString());
   } catch (error) {
     console.error("Error polling clock:", error.message);
-    console.log(error.config.auth);
   }
 }
 
